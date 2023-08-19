@@ -2,13 +2,8 @@ import * as React from "react";
 import List from "@mui/material/List";
 import MenuItem from "@mui/material/MenuItem";
 import { Paper } from "@mui/material";
-import { Octokit } from "octokit";
 
 export default function Menu({ data, user, setRepo, setCommits }) {
-  const octokit = new Octokit({
-    auth: process.env.REACT_APP_GITHUB_TOKEN,
-  });
-
   async function handleClick(e) {
     const repo = e.currentTarget.textContent;
     setRepo(repo);
