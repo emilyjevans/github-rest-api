@@ -1,10 +1,9 @@
 import { DataGrid } from "@mui/x-data-grid";
 
 export default function DataTable(commits) {
-  console.log(commits);
+  let id = 0;
   const formatCommits = commits.data.map((commit) => {
     const table = {};
-    let id = 1;
 
     table.id = id;
     table.message = commit.commit.message;
@@ -19,7 +18,7 @@ export default function DataTable(commits) {
     });
 
     table.date = formattedDateTime;
-    table.author = commit.author.login;
+    table.author = commit.commit.author.name;
     id++;
     return table;
   });
@@ -34,6 +33,10 @@ export default function DataTable(commits) {
       rows={formatCommits}
       columns={columns}
       sx={{ backgroundColor: "#FFFFFF" }}
+      pageSizeOptions={[5, 10, 25]}
+      initialState={{
+        pagination: { paginationModel: { pageSize: 5 } },
+      }}
     />
   );
 }

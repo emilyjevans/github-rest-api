@@ -7,20 +7,27 @@ import { Grid, Button } from "@mui/material";
 import DataTable from "./components/DataTable/DataTable";
 
 function App() {
-  const [user, setUser] = useState("bbc");
+  const [user, setUser] = useState("emilyjevans");
   const [menuData, setMenuData] = useState([]);
-  const [repo, setRepo] = useState(".github");
+  const [repo, setRepo] = useState("nc-giggle");
   const [commits, setCommits] = useState([
     {
-      commit: { message: "blank", author: { date: "2021-12-16T10:05:52Z" } },
-      author: { login: "Author" },
+      commit: {
+        message: "",
+        author: { date: "", name: "" },
+      },
     },
   ]);
+  const [pageState, setPageState] = useState("default");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await getReposForAUser(user);
-    setMenuData(response);
+    try {
+      const response = await getReposForAUser(user);
+      setMenuData(response);
+    } catch {
+      setPageState("error");
+    }
   };
 
   const octokit = new Octokit({
@@ -63,58 +70,40 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Find out the latest git commit history</h1>
-        <Grid
-          container
-          spacing={{ xs: 2, sm: 3 }}
-          columns={{ xs: 4, sm: 8 }}
-          sx={{ p: 2 }}
-        >
-          <Grid item xs={4} sm={2}>
-            <p>Enter a github user</p>
-            <form onSubmit={handleSubmit}>
-              <SearchBar
-                user={user}
-                setUser={setUser}
-                sx={{ height: 50, font: "#FFFFFF" }}
-              />{" "}
-              <Button variant="contained" type="submit" sx={{ height: 55 }}>
-                Submit
-              </Button>
-            </form>
-            {menuData.length > 0 && (
-              <>
-                <p>And choose a repo</p>
-                <Menu
-                  data={menuData}
-                  repo={repo}
-                  user={user}
-                  setRepo={setRepo}
-                  setCommits={setCommits}
-                />
-              </>
-            )}
+        {pageState === "default" && (
+          <Grid
+            container
+            spacing={{ xs: 2, sm: 3 }}
+            columns={{ xs: 4, sm: 8 }}
+            sx={{ p: 2 }}
+          >
+            <Grid item xs={4} sm={2}>
+              <p>Enter a github user</p>
+              <form onSubmit={handleSubmit}>
+                <SearchBar user={user} setUser={setUser} sx={{ height: 50 }} />{" "}
+                <Button variant="contained" type="submit" sx={{ height: 55 }}>
+                  Submit
+                </Button>
+              </form>
+              {menuData.length > 0 && (
+                <>
+                  <p>And choose a repo</p>
+                  <Menu
+                    data={menuData}
+                    repo={repo}
+                    user={user}
+                    setRepo={setRepo}
+                    setCommits={setCommits}
+                  />
+                </>
+              )}
+            </Grid>
+            <Grid item xs={4} sm={6}>
+              {repo !== "nc-giggle" && <DataTable data={commits} />}
+            </Grid>
           </Grid>
-          <Grid item xs={4} sm={6}>
-            {repo !== "nc-giggle" && (
-              // <>
-              //   <p>
-              //     Current Repo: <b>{repo}</b>
-              //   </p>
-              //   <p>
-              //     Latest commit is <br />
-              //     <i>"{commits[0].commit.message}"</i>
-              //   </p>
-              //   <p>
-              //     Author: <b>{commits[0].author.login}</b>
-              //   </p>
-              //   <p>
-              //     Date: <b>{commits[0].commit.author.date}</b>
-              //   </p>
-              // </>
-              <DataTable data={commits} />
-            )}
-          </Grid>
-        </Grid>
+        )}
+        {pageState === "error" && <p>Something went wrong</p>}
       </header>
     </div>
   );
