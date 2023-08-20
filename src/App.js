@@ -4,6 +4,7 @@ import SearchBar from "./components/SearchBar/SearchBar";
 import { Octokit } from "octokit";
 import Menu from "./components/Menu/Menu";
 import { Grid, Button } from "@mui/material";
+import DataTable from "./components/DataTable/DataTable";
 
 function App() {
   const [user, setUser] = useState("bbc");
@@ -61,12 +62,21 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Find out the latest git commit!</h1>
-        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 1, sm: 2 }}>
-          <Grid item xs={1} sm={1}>
+        <h1>Find out the latest git commit history</h1>
+        <Grid
+          container
+          spacing={{ xs: 2, sm: 3 }}
+          columns={{ xs: 4, sm: 8 }}
+          sx={{ p: 2 }}
+        >
+          <Grid item xs={4} sm={2}>
             <p>Enter a github user</p>
             <form onSubmit={handleSubmit}>
-              <SearchBar user={user} setUser={setUser} sx={{ height: 50 }} />{" "}
+              <SearchBar
+                user={user}
+                setUser={setUser}
+                sx={{ height: 50, font: "#FFFFFF" }}
+              />{" "}
               <Button variant="contained" type="submit" sx={{ height: 55 }}>
                 Submit
               </Button>
@@ -84,23 +94,24 @@ function App() {
               </>
             )}
           </Grid>
-          <Grid item xs={1} sm={1}>
+          <Grid item xs={4} sm={6}>
             {repo !== "nc-giggle" && (
-              <>
-                <p>
-                  Current Repo: <b>{repo}</b>
-                </p>
-                <p>
-                  Latest commit is <br />
-                  <i>"{commits[0].commit.message}"</i>
-                </p>
-                <p>
-                  Author: <b>{commits[0].author.login}</b>
-                </p>
-                <p>
-                  Date: <b>{commits[0].commit.author.date}</b>
-                </p>
-              </>
+              // <>
+              //   <p>
+              //     Current Repo: <b>{repo}</b>
+              //   </p>
+              //   <p>
+              //     Latest commit is <br />
+              //     <i>"{commits[0].commit.message}"</i>
+              //   </p>
+              //   <p>
+              //     Author: <b>{commits[0].author.login}</b>
+              //   </p>
+              //   <p>
+              //     Date: <b>{commits[0].commit.author.date}</b>
+              //   </p>
+              // </>
+              <DataTable data={commits} />
             )}
           </Grid>
         </Grid>
